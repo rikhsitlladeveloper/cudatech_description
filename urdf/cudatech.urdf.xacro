@@ -1,0 +1,451 @@
+<?xml version="1.0"?>
+<robot name="cudatech" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<gazebo>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>/</robotNamespace>
+    <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+  </plugin>
+  <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+    <ros>
+      <namespace>/</namespace>
+      <argument>cmd_vel:=cmd_vel</argument>
+    </ros>
+    <left_joint>left_wheel_joint</left_joint>
+    <right_joint>right_wheel_joint</right_joint>
+    <wheel_separation>0.5</wheel_separation>
+    <wheel_diameter>0.3</wheel_diameter>
+    <torque>15</torque>385
+    <command_topic>cmd_vel</command_topic>
+
+
+    <max_wheel_torque>200</max_wheel_torque>
+    <max_wheel_acceleration>10.0</max_wheel_acceleration>
+    
+    <odometry_frame>odom</odometry_frame>
+    <robot_base_frame>base_link</robot_base_frame>
+    <publish_odom>true</publish_odom>
+    <publish_odom_tf>true</publish_odom_tf>
+    <publish_wheel_tf>true</publish_wheel_tf> 
+  </plugin>
+</gazebo>
+
+
+  <xacro:arg name="use_nominal_extrinsics" default="false"/>
+  <xacro:arg name="add_plug" default="false" />
+  <xacro:arg name="use_mesh" default="true" />
+  <xacro:include filename="package://realsense2_description/urdf/_d435.urdf.xacro" />
+  
+  <link name="base_link">
+  </link>
+
+  <!-- Chasis begin -->
+
+  <link name="chasis_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/chasis.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/chasis.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="chasis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chasis_link"/>
+    <origin xyz="0 0 0" rpy="1.57079633 0 0" /> 
+  </joint>
+
+  <!-- Chasis end -->
+
+  <!-- Left whell begin -->
+
+  <link name="left_wheel_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="left_wheel_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <joint name="left_wheel_link" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="left_wheel_link"/>
+    <origin xyz="-0.2 0 0.037" rpy="-1.57079633 0 1.57079633" /> 
+  </joint>
+
+  <!-- Left whell end -->
+
+  <!-- Right whell begin -->
+
+  <link name="right_wheel_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/wheel.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="right_wheel_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <joint name="right_wheel_link" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="right_wheel_link"/>
+    <origin xyz="0.2 0 0.015" rpy="1.57079633 0 1.57079633" /> 
+  </joint>
+
+  <!-- Right whell end -->
+
+  <!-- Drunk whell 1 begin -->
+
+  <link name="drunk_wheel_1_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/drunk_whell.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/drunk_whell.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="drunk_wheel_1_joint" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="drunk_wheel_1_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+    <axis xyz="1 1 1"/>
+  </joint>
+
+  <joint name="drunk_wheel_1_link" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="drunk_wheel_1_link"/>
+    <origin xyz="0 -0.055 0.21" rpy="1.57079633 0 1.57079633" /> 
+  </joint>
+
+  <!-- Drunk whell 1 end -->
+
+  <!-- Drunk whell 2 begin -->
+
+  <link name="drunk_wheel_2_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/drunk_whell.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/drunk_whell.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="drunk_wheel_2_joint" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="drunk_wheel_2_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+    <axis xyz="1 1 1"/>
+  </joint>
+
+  <joint name="drunk_wheel_2_link" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="drunk_wheel_2_link"/>
+    <origin xyz="0.1 -0.055 -0.16" rpy="1.57079633 0 1.57079633" /> 
+  </joint>
+
+  <!-- Drunk whell 2 end -->
+
+  <!-- Drunk whell 3 begin -->
+
+  <link name="drunk_wheel_3_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/drunk_whell.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/drunk_whell.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="drunk_wheel_3_joint" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="drunk_wheel_3_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+    <axis xyz="1 1 1"/>
+  </joint>
+
+  <joint name="drunk_wheel_3_link" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="drunk_wheel_3_link"/>
+    <origin xyz="-0.1 -0.055 -0.16" rpy="1.57079633 0 1.57079633" /> 
+  </joint>
+
+  <!-- Drunk whell 3 end -->
+
+  <!-- Left brush begin -->
+
+  <link name="left_brush_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/brush.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/brush.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="left_brush_joint" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="left_brush_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <joint name="left_brush_link" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="left_brush_link"/>
+    <origin xyz="0.16 -0.01 0.195" rpy="0 0 0" /> 
+  </joint>
+
+  <!-- Left brush end -->
+
+  <!-- Right brush begin -->
+
+  <link name="right_brush_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/brush.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/brush.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+  <joint name="right_brush_joint" type="continuous">
+    <parent link="chasis_link"/>
+    <child link="right_brush_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <joint name="right_brush_link" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="right_brush_link"/>
+    <origin xyz="-0.16 -0.01 0.195" rpy="0 0 0" /> 
+  </joint>
+
+  <!-- Right brush end -->
+
+  <!-- rplidar begin -->
+
+  <link name="rplidar_link">
+    <visual>
+      <origin rpy="1.57079633 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/rplidar.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin rpy="1.57079633 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://cudatech_description/meshes/rplidar.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="5"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"
+      />
+    </inertial>
+  </link>
+
+  <joint name="rplidar_joint" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="rplidar_link"/>
+    <!--origin xyz="0 0.215 0.13" rpy="-1.57079633 -1.57079633 0" /--> 
+    <origin xyz="0 0.215 0.22" rpy="-1.57079633 -1.57079633 0" /> 
+  </joint>
+
+  <!-- rplidar end -->
+
+  <!-- left camera begin -->
+
+  <link name="left_camera_base">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://realsense2_description/meshes/d435.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="left_camera_joint" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="left_camera_base"/>
+    <origin xyz="0.14 0.16 0.3" rpy="0 0 0" /> 
+  </joint>
+
+  <xacro:sensor_d435 parent="left_camera" name="left_camera">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:sensor_d435>
+
+  <!-- left camera end -->
+
+  <!-- right camera begin -->
+
+  <link name="right_camera_base">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/> 
+      <geometry>
+        <mesh filename="package://realsense2_description/meshes/d435.dae" />
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="right_camera_joint" type="fixed">
+    <parent link="chasis_link"/>
+    <child link="right_camera_base"/>
+    <origin xyz="-0.14 0.16 0.3" rpy="0 0 0" /> 
+  </joint>
+
+  <xacro:sensor_d435 parent="right_camera" name="right_camera">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:sensor_d435>
+
+  <!-- right camera end -->
+
+</robot>

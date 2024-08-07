@@ -1,0 +1,15 @@
+controller_server:
+  ros__parameters:
+    controller_frequency: 20.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.2
+    progress_checker_plugin: "progress_checker"
+    goal_checker_plugins: ["goal_checker"]
+    controller_plugins: ["FollowPath", "RotateToHeading"]
+
+    RotateToHeading:
+      plugin: "nav2_rotate_to_heading::RotateToHeading"
+      max_rotational_vel: 1.0  # maximum rotation speed
+      min_rotational_vel: 0.4  # minimum rotation speed
+      rotational_acc_lim: 3.2  # rotation acceleration limit
